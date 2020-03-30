@@ -1,0 +1,7 @@
+*.png
+animat*.py
+__pycache__/
+wx*.*
+hanoiTowersGraphicObject.py
+.DS_Store
+.idea/
