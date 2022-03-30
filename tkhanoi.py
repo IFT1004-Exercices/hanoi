@@ -307,17 +307,19 @@ if __name__=="__main__":
             start(int):  Numéro de la pile d'où on doit retirer un disque.
             finish(int): Numéro de la pile où l'on dépose le disque retiré."""
 
-        global executeMoveDisk, stack, boutonDepart
+        global executeMoveDisk, stack, boutonDepart, numberOfMoves
 
         # L'exécution est autorisée:  transférer le disque
         if executeMoveDisk:
             stack[start].moveDiskToStack(stack[finish])
+            numberOfMoves += 1
 
         # L'exécution est suspendue:  attendre que le bouton soit pressé de nouveau.  Lorsque pressé, effectuer le
         # transfert en attente.
         else:
             boutonDepart.waitvar(startStopButtonText)
             stack[start].moveDiskToStack(stack[finish])
+            numberOfMoves += 1
 
     def startStopButtonPressed():
         """Commande correspondant à la pression du bouton arrêt,recommencer.  Sert à contrôler l'exécution du programme,
@@ -332,6 +334,7 @@ if __name__=="__main__":
             # Coeur du programme:  hanoiTransfer génère les mouvements et les envoie à la fonction moveDisk qui modifie
             # les dessins en conséquence.
             puzzle.hanoiTransfer(puzzleNumber, 0, 1, moveDisk)
+            print(f"{numberOfMoves} coups avec {puzzleNumber} disques.")
 
         # Suspendre l'exécution du programme, avec executeMoveDisk = False
         elif startStopButtonText.get() == "Arrêter":
@@ -348,9 +351,10 @@ if __name__=="__main__":
     fenetre = tk.Tk()
     fenetre.title("Tours de Hanoi")
 
-    # Algorithme récursif de résolution des Tours de Hanoi
-    puzzleNumber = 10
+    # Objet HanoiTowers contenant l'algorithme récursif de résolution des Tours de Hanoi
+    puzzleNumber = 6
     puzzle = ht.HanoiTowers(puzzleNumber)
+    numberOfMoves = 0  # Va compter les coups pour reussir le puzzle.
 
     # Widget canvas dans lequel on dessinera
     toile = tk.Canvas(fenetre, width=1000, height=500)
@@ -362,7 +366,7 @@ if __name__=="__main__":
     stack[1] = StackOfColoredAnimatedDisks(toile, 500, 0)
     stack[2] = StackOfColoredAnimatedDisks(toile, 750, 0)
 
-    # Gestion du déroulement avec le bouton arrêt,recommencer
+    # Gestion du déroulement avec le bouton "arrêt,recommencer"
     startStopButtonText = tk.StringVar()
     startStopButtonText.set("Commencer")
     boutonDepart = tk.Button(fenetre, textvariable=startStopButtonText, command=startStopButtonPressed)
